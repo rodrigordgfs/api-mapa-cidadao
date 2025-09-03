@@ -1,9 +1,143 @@
-generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
-}
-
+// --------------------------------------------------
+// Datasource e Generator
+// --------------------------------------------------
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// --------------------------------------------------
+// Models
+// --------------------------------------------------
+
+model Usuario {
+  id        String   @id
+  nome      String
+  email     String   @unique
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  necessidades Necessidade[]
+  comentarios  Comentario[]
+  apoios       Apoio[]
+
+  @@map("usuarios")
+}
+
+// -----------------------------
+
+model Localizacao {
+  id         String  @id @default(uuid())
+  latitude   Float
+  longitude  Float
+  endereco   String?
+  bairro     String?
+  cidade     String?
+  estado     String?
+  cep        String?
+  referencia String?
+
+  necessidades Necessidade[]
+
+  @@map("localizacoes")
+}
+
+// -----------------------------
+
+model Necessidade {
+  id          String      @id @default(uuid())
+  titulo      String
+  descricao   String
+  categoria   Categoria
+  status      Status      @default(ABERTO)
+  privacidade Privacidade @default(PUBLICO)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  autorId       String
+  autor         Usuario      @relation(fields: [autorId], references: [id])
+  localizacaoId String
+  localizacao   Localizacao  @relation(fields: [localizacaoId], references: [id])
+  fotos         Foto[]
+  comentarios   Comentario[]
+  apoios        Apoio[]
+
+  @@map("necessidades")
+}
+
+// -----------------------------
+
+model Foto {
+  id  String @id @default(uuid())
+  url String
+
+  necessidadeId String
+  necessidade   Necessidade @relation(fields: [necessidadeId], references: [id])
+
+  @@map("fotos")
+}
+
+// -----------------------------
+
+model Comentario {
+  id        String   @id @default(uuid())
+  texto     String
+  createdAt DateTime @default(now())
+
+  necessidadeId String
+  necessidade   Necessidade @relation(fields: [necessidadeId], references: [id])
+
+  autorId String
+  autor   Usuario @relation(fields: [autorId], references: [id])
+
+  @@map("comentarios")
+}
+
+// -----------------------------
+
+model Apoio {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  // Relacionamentos
+  necessidadeId String
+  necessidade   Necessidade @relation(fields: [necessidadeId], references: [id])
+
+  autorId String
+  autor   Usuario @relation(fields: [autorId], references: [id])
+
+  @@map("apoios")
+}
+
+// --------------------------------------------------
+// Enums
+// --------------------------------------------------
+
+enum Categoria {
+  INFRAESTRUTURA
+  ILUMINACAO
+  LIXO
+  SEGURANCA
+  ENCHENTE
+  TRANSPORTE
+  RECICLAGEM
+  EVENTO_COMUNITARIO
+  OUTRO
+}
+
+enum Status {
+  PENDENTE
+  ABERTO
+  EM_ANDAMENTO
+  RESOLVIDO
+}
+
+enum Privacidade {
+  PUBLICO
+  ANONIMO
 }
