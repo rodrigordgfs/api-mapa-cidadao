@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  mapa_cidadao_postgres:
+    image: postgres:15
+    restart: always
+    container_name: mapa_cidadao_postgres
+    environment:
+      POSTGRES_USER: shinodalabs
+      POSTGRES_PASSWORD: shinodalabs
+      POSTGRES_DB: mapa_cidadao
+    volumes:
+      - mapa_cidadao_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - mapa_cidadao_network
+
+networks:
+  mapa_cidadao_network:
+    driver: bridge
+
+volumes:
+  mapa_cidadao_pgdata:

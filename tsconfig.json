@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "_version": "24.0.0",
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2024",
+      "ESNext.Array",
+      "ESNext.Collection",
+      "ESNext.Iterator",
+      "ESNext.Promise"
+    ],
+    "module": "node16",
+    "target": "es2020",
+    "noEmit": true,
+    "outDir": "dist",
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node16",
+    "strictNullChecks": true
+  },
+  "include": ["src"]
+}
